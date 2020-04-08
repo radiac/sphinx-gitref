@@ -2,6 +2,12 @@
 Sphinx Gitref
 =============
 
+.. image:: https://travis-ci.org/wildfish/sphinx-gitref.svg?branch=master
+    :target: https://travis-ci.org/wildfish/sphinx-gitref
+
+.. image:: https://codecov.io/gh/wildfish/sphinx-gitref/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/wildfish/sphinx-gitref
+
 Adds a ``:gitref:`..``` role to sphinx to link to your code on GitHub, GitLab or
 Bitbucket, and to make sure the references in your docs match the code.
 
