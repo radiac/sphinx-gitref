@@ -116,7 +116,7 @@ Contributing
 
 Contributions are welcome by pull request.
 
-They will be merged more quikcly if they are provided with unit tests; to run tests
+They will be merged more quickly if they are provided with unit tests; to run tests
 locally with tox::
 
     pip install tox
