@@ -1,0 +1,14 @@
+language: python
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+dist: xenial
+before_install:
+  - python --version
+  - pip install --upgrade pip wheel setuptools codecov
+install:
+  - pip install -r requirements-dev.txt
+script: pytest
+after_sucess:
+  - codecov
