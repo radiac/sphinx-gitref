@@ -13,3 +13,7 @@ pytest-mock
 # Project dependencies
 docutils
 sphinx
+
+# Deployment
+wheel
+twine
