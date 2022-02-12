@@ -39,7 +39,7 @@ def paths(tmp_path):
     paths.html.mkdir()
     paths.doctrees.mkdir()
     paths.conf.write_text(
-        u"""
+        """
 master_doc = 'index'
 extensions = ["sphinx_gitref"]
 """
@@ -47,21 +47,21 @@ extensions = ["sphinx_gitref"]
 
     paths.git.mkdir()
     paths.git_config.write_text(GIT_CONFIG)
-    paths.git_head.write_text(u"ref: refs/heads/master\n")
+    paths.git_head.write_text("ref: refs/heads/master\n")
 
     # Give a sensible default for most tests
-    paths.example.write_text(u"value = 1")
+    paths.example.write_text("value = 1")
 
     return paths
 
 
-EXAMPLE_FUNCTION = u"""value = 1
+EXAMPLE_FUNCTION = """value = 1
 
 def function():
     pass
 """
 
-EXAMPLE_CLASS = u"""value = 1
+EXAMPLE_CLASS = """value = 1
 
 class Cls():
     value = 1
@@ -95,7 +95,7 @@ def app(paths):
 
 def test_path__path_renders_as_link(app, paths):
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`example.py`")
+    index.write_text("foo :gitref:`example.py`")
     app.build()
 
     html = (paths.html / "index.html").read_text()
@@ -108,7 +108,7 @@ def test_path__path_renders_as_link(app, paths):
 
 def test_path__path_renders_as_link_with_label(app, paths):
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`Example <example.py>`")
+    index.write_text("foo :gitref:`Example <example.py>`")
     app.build()
 
     html = (paths.html / "index.html").read_text()
@@ -122,7 +122,7 @@ def test_path__path_renders_as_link_with_label(app, paths):
 def test_path__path_does_not_exist__renders_but_raises_warning(app, paths, capsys):
     paths.example.unlink()
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`Example <example.py>`")
+    index.write_text("foo :gitref:`Example <example.py>`")
 
     start_warnings = app._warncount
     app.build()
@@ -138,27 +138,27 @@ def test_path__path_does_not_exist__renders_but_raises_warning(app, paths, capsy
     # ... but still raises a warning
     assert app._warncount - start_warnings == 1
     assert (
-        "WARNING: Referenced file does not exist: example.py"
+        "Referenced file does not exist: example.py"
         in app._warning.getvalue().splitlines()[-1]
     )
 
 
 def test_coderef_var__path_renders_as_link(app, paths):
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`example.py::value`")
+    index.write_text("foo :gitref:`example.py::value`")
     app.build()
 
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
         'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py#L1">'
-        "example.py value</a></p>"
+        "value</a></p>"
     ) in html
 
 
 def test_coderef_var__path_renders_as_link_with_label(app, paths):
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`Example <example.py::value>`")
+    index.write_text("foo :gitref:`Example <example.py::value>`")
     app.build()
 
     html = (paths.html / "index.html").read_text()
@@ -171,7 +171,7 @@ def test_coderef_var__path_renders_as_link_with_label(app, paths):
 
 def test_coderef_var__does_not_exist__renders_as_link_but_raises_error(app, paths):
     index = paths.docs / "index.rst"
-    index.write_text(u"foo :gitref:`Example <example.py::missing>`")
+    index.write_text("foo :gitref:`Example <example.py::missing>`")
 
     start_warnings = app._warncount
     app.build()
@@ -187,6 +187,6 @@ def test_coderef_var__does_not_exist__renders_as_link_but_raises_error(app, path
     # Check it still raises a warning
     assert app._warncount - start_warnings == 1
     assert (
-        'WARNING: Error resolving code reference "example.py::missing": '
+        'Error resolving code reference "example.py::missing": '
         'Couldn\'t find "missing"'
     ) in app._warning.getvalue().splitlines()[-1]
