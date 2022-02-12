@@ -146,4 +146,6 @@ Changelog
 0.2.0   Add custom label formatting with ``gitref_label_format``
 
         Fix bug when node target has no id
+
+        Improve branch detection to support a recently detached ``HEAD``
 ======= ====

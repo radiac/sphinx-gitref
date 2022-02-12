@@ -17,6 +17,7 @@ def paths(tmp_path):
         git = tmp_path / ".git"
         config = tmp_path / ".git" / "config"
         head = tmp_path / ".git" / "HEAD"
+        packed_refs = tmp_path / ".git" / "packed-refs"
 
     paths.git.mkdir()
     return paths
@@ -56,7 +57,7 @@ def test_config_valid_but_without_origin__fails_silently(paths):
 
 def test_config_valid_but_with_unknown_origin__fails_silently(paths):
     paths.config.write_text(
-        u"""[core]
+        """[core]
         repositoryformatversion = 0
         filemode = true
         bare = false
@@ -76,7 +77,7 @@ def test_config_invalid__fails_loudly(paths):
     except ImportError:
         from ConfigParser import MissingSectionHeaderError
 
-    paths.config.write_text(u"invalid")
+    paths.config.write_text("invalid")
     repo = Repo(paths.git)
 
     with pytest.raises(MissingSectionHeaderError):
@@ -85,13 +86,53 @@ def test_config_invalid__fails_loudly(paths):
 
 def test_head_invalid__fails_silently(paths):
     paths.config.write_text(GIT_CONFIG)
-    paths.head.write_text(u"invalid\n")
+    paths.head.write_text("invalid\n")
     repo = Repo(paths.git)
     assert repo.get_local_branch() is None
 
 
 def test_head_valid__returns_branch_name(paths):
     paths.config.write_text(GIT_CONFIG)
-    paths.head.write_text(u"ref: refs/heads/master\n")
+    paths.head.write_text("ref: refs/heads/master\n")
+    repo = Repo(paths.git)
+    assert repo.get_local_branch() == "master"
+
+
+def test_head_detached__packed_ref_file_missing__fails_silently(paths):
+    git_hash = "1234567890abcdef"
+    paths.config.write_text(GIT_CONFIG)
+    paths.head.write_text(f"{git_hash}\n")
+    repo = Repo(paths.git)
+    assert repo.get_local_branch() is None
+
+
+def test_head_detached__packed_ref_hash_missing__returns_branch_name(paths):
+    git_hash = "1234567890abcdef"
+    paths.config.write_text(GIT_CONFIG)
+    paths.head.write_text(f"{git_hash}\n")
+    paths.packed_refs.write_text(
+        """# comment
+11111 refs/remotes/origin/one
+66666 refs/tags/0.0.1
+"""
+    )
+    repo = Repo(paths.git)
+    assert repo.get_local_branch() is None
+
+
+def test_head_detached__packed_ref_exists__returns_branch_name(paths):
+    git_hash = "1234567890abcdef"
+    paths.config.write_text(GIT_CONFIG)
+    paths.head.write_text(f"{git_hash}\n")
+    paths.packed_refs.write_text(
+        f"""# comment
+11111 refs/remotes/origin/one
+22222 refs/remotes/origin/two
+33333 refs/remotes/origin/three
+{git_hash} refs/remotes/origin/master
+^55555
+66666 refs/tags/0.0.1
+"""
+    )
     repo = Repo(paths.git)
     assert repo.get_local_branch() == "master"

@@ -24,7 +24,7 @@ class Repo:
     #: Name of the remote in ``.git/config``
     remote_name = None
 
-    BRANCH_PATTERN = re.compile(r"ref: refs/heads/(?P<branch>.+?)\n")
+    BRANCH_PATTERN = re.compile(r"^ref: refs/heads/(?P<branch>.+)$")
 
     def __init__(self, path, remote_name=DEFAULT_REMOTE):
         """
@@ -76,15 +76,34 @@ class Repo:
         if self.path is None:
             return None
 
-        git_head = self.path / "HEAD"
-        if not git_head.is_file():
+        # Get the current HEAD
+        git_head_path = self.path / "HEAD"
+        if not git_head_path.is_file():
             return None
+        git_head = git_head_path.read_text().strip()
 
-        with git_head.open("r") as f:
-            raw = f.read()
-
-        matches = self.BRANCH_PATTERN.match(raw)
+        # See if we're on a named branch
+        matches = self.BRANCH_PATTERN.match(git_head)
         if matches:
             return matches.group("branch")
+
+        # We're on a detached head, likely readthedocs; try to look it up in packed-refs
+        packed_refs_path = self.path / "packed-refs"
+        if not packed_refs_path.is_file():
+            return None
+
+        packed_refs_raw = packed_refs_path.read_text()
+        remote_ref_prefix = f"refs/remotes/{self.remote_name}/"
+        for line in packed_refs_raw.splitlines():
+            # Skip irrelevant lines
+            if line.startswith("#") or " " not in line:
+                continue
+
+            # Typical line:
+            #   1234567890abcdef refs/remotes/origin/develop
+            commit_hash, ref = line.split(" ", 1)
+            if commit_hash == git_head and ref.startswith(remote_ref_prefix):
+                ref = ref[len(remote_ref_prefix) :]
+                return ref
 
         return None

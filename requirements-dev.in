@@ -1,6 +1,9 @@
 # Dev
 pip-tools
 
+# Pin flake8 for now - https://github.com/tholo/pytest-flake8/issues/81
+flake8~=3.9
+
 # Testing
 doc8
 pytest
@@ -17,3 +20,4 @@ sphinx
 # Deployment
 wheel
 twine
+
