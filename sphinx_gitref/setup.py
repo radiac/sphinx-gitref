@@ -5,6 +5,7 @@ The ``setup()`` function will be called automatically by Sphinx
 """
 from pathlib import Path
 
+from .constants import DEFAULT_LABEL_FORMAT
 from .git import Repo
 from .remote import registry
 from .role import gitref
@@ -43,6 +44,7 @@ def setup(app):
     # Add config variables
     app.add_config_value("gitref_remote_url", repo.get_remote_url(), "html")
     app.add_config_value("gitref_branch", repo.get_local_branch(), "html")
+    app.add_config_value("gitref_label_format", DEFAULT_LABEL_FORMAT, "html")
 
     # Listen for config initialised
     app.connect("config-inited", lookup_remote)

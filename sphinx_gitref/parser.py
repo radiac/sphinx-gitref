@@ -42,7 +42,7 @@ def find_name_in_nodes(name, nodes, path=""):
         # Check for assignments
         if type(node) in AssignTypes:
             for target in node.targets:
-                if target.id != name:
+                if not hasattr(target, "id") or target.id != name:
                     continue
 
                 if rest:
