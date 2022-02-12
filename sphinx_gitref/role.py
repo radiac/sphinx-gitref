@@ -48,8 +48,6 @@ def gitref(name, rawtext, text, lineno, inliner, options={}, content=[]):
     has_t, title, target = split_explicit_title(text)
     title = utils.unescape(title)
     target = utils.unescape(target)
-    if title == target:
-        title = title.replace("::", " ")
 
     # Break target
     if "::" in target:
@@ -57,6 +55,14 @@ def gitref(name, rawtext, text, lineno, inliner, options={}, content=[]):
     else:
         filename = target
         coderef = None
+
+    # Set title if not set
+    if title == target:
+        if coderef is not None:
+            title = app.config.gitref_label_format.format(
+                filename=filename,
+                coderef=coderef,
+            )
 
     # Ensure the file exists - can be a file or a dir
     filepath = project_root / filename
@@ -70,7 +76,8 @@ def gitref(name, rawtext, text, lineno, inliner, options={}, content=[]):
             ref_start = python_to_lineno(filepath, coderef)
         except ParseError as error:
             inliner.reporter.error(
-                f'Error resolving code reference "{target}": {error}', line=lineno,
+                f'Error resolving code reference "{target}": {error}',
+                line=lineno,
             )
             target = filename
 

@@ -53,6 +53,14 @@ Modify your Sphinx ``conf.py``:
 
       gitref_branch = "master"
 
+#. Optional: Change the link label format when a coderef is provided without an
+   explicit label, eg ``:gitref:`filename.py::coderef```
+
+   Gitref defaults to using showing the coderef and dropping the filename. This can be
+   overridden by setting a format string::
+
+        gitref_label_format = "{filename} {coderef}"
+
 
 Usage
 =====
@@ -127,3 +135,15 @@ locally with tox::
 
     pip install tox
     tox
+
+
+Changelog
+=========
+
+======= ====
+0.1.0   Initial release
+
+0.2.0   Add custom label formatting with ``gitref_label_format``
+
+        Fix bug when node target has no id
+======= ====
