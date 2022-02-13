@@ -1,4 +1,4 @@
-GIT_CONFIG = u"""[core]
+GIT_CONFIG = """[core]
         repositoryformatversion = 0
         filemode = true
         bare = false
