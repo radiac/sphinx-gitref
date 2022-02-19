@@ -117,8 +117,8 @@ class GitHub(Remote):
     """
 
     remote_match = [
-        re.compile(r"^git@github.com:(?P<repo>.+?)\.git$"),
-        re.compile(r"^https://github.com/(?P<repo>.+?)\.git$"),
+        re.compile(r"^git@github.com:(?P<repo>.+?)(\.git)?$"),
+        re.compile(r"^https://github.com/(?P<repo>.+?)(\.git)?$"),
     ]
     url_pattern = "https://github.com/{repo}/blob/{branch}/{filename}{line}"
     url_pattern_line = "#L{line}"
@@ -130,8 +130,8 @@ class Bitbucket(Remote):
     """
 
     remote_match = [
-        re.compile(r"^git@bitbucket.org:(?P<repo>.+?)\.git$"),
-        re.compile(r"^https://bitbucket.org/(?P<repo>.+?)\.git$"),
+        re.compile(r"^git@bitbucket.org:(?P<repo>.+?)(\.git)?$"),
+        re.compile(r"^https://bitbucket.org/(?P<repo>.+?)(\.git)?$"),
     ]
     url_pattern = "https://bitbucket.org/{repo}/src/{branch}/{filename}{line}"
     url_pattern_line = "#lines-{line}"
@@ -143,8 +143,8 @@ class GitLab(Remote):
     """
 
     remote_match = [
-        re.compile(r"^git@gitlab.com:(?P<repo>.+?)\.git$"),
-        re.compile(r"^https://gitlab.com/(?P<repo>.+?)\.git$"),
+        re.compile(r"^git@gitlab.com:(?P<repo>.+?)(\.git)?$"),
+        re.compile(r"^https://gitlab.com/(?P<repo>.+?)(\.git)?$"),
     ]
     url_pattern = "https://gitlab.com/{repo}/blob/{branch}/{filename}{line}"
     url_pattern_line = "#L{line}"

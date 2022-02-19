@@ -148,4 +148,6 @@ Changelog
         Fix bug when node target has no id
 
         Improve branch detection to support a recently detached ``HEAD``
+
+0.2.1   Improve repository pattern matching
 ======= ====
