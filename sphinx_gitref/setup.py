@@ -36,6 +36,8 @@ def setup(app):
     """
     Prepare config values and register role
     """
+    from . import __version__
+    
     # Pick up config defaults from current repo
     doc_root = Path(app.confdir)
     git_root = doc_root.parent / ".git"
@@ -51,3 +53,5 @@ def setup(app):
 
     # Register role
     app.add_role("gitref", gitref)
+
+    return {"version": __version__, "parallel_read_safe": True}
