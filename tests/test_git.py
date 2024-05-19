@@ -46,13 +46,13 @@ def test_head_does_not_exist__fails_silently(paths):
 def test_config_exists__origin_found(paths):
     paths.config.write_text(GIT_CONFIG)
     repo = Repo(paths.git)
-    assert repo.get_remote_url() == "git@github.com:wildfish/sphinx_gitref.git"
+    assert repo.get_remote_url() == "git@github.com:radiac/sphinx_gitref.git"
 
 
 def test_config_valid_but_without_origin__fails_silently(paths):
     paths.config.write_text(GIT_CONFIG.replace("github.com", "example.com"))
     repo = Repo(paths.git)
-    assert repo.get_remote_url() == "git@example.com:wildfish/sphinx_gitref.git"
+    assert repo.get_remote_url() == "git@example.com:radiac/sphinx_gitref.git"
 
 
 def test_config_valid_but_with_unknown_origin__fails_silently(paths):

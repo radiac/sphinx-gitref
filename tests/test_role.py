@@ -6,7 +6,6 @@ from sphinx.application import Sphinx
 
 from .common import GIT_CONFIG
 
-
 try:
     # Python 2.7
     from StringIO import StringIO
@@ -101,7 +100,7 @@ def test_path__path_renders_as_link(app, paths):
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
         "example.py</a></p>"
     ) in html
 
@@ -114,7 +113,7 @@ def test_path__path_renders_as_link_with_label(app, paths):
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
         "Example</a></p>"
     ) in html
 
@@ -131,7 +130,7 @@ def test_path__path_does_not_exist__renders_but_raises_warning(app, paths, capsy
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
         "Example</a></p>"
     ) in html
 
@@ -151,7 +150,7 @@ def test_coderef_var__path_renders_as_link(app, paths):
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py#L1">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py#L1">'
         "value</a></p>"
     ) in html
 
@@ -164,7 +163,7 @@ def test_coderef_var__path_renders_as_link_with_label(app, paths):
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py#L1">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py#L1">'
         "Example</a></p>"
     ) in html
 
@@ -180,7 +179,7 @@ def test_coderef_var__does_not_exist__renders_as_link_but_raises_error(app, path
     html = (paths.html / "index.html").read_text()
     assert (
         '<p>foo <a class="reference external" '
-        'href="https://github.com/wildfish/sphinx_gitref/blob/master/example.py">'
+        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
         "Example</a></p>"
     ) in html
 
