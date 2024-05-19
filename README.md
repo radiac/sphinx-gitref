@@ -14,21 +14,17 @@ Key features:
 * Link to source code on github
 * Incorporate into tests or git hooks
 
-Supports Python 3.6+
+Supports Python 3.7+
 
 
-Installation
-============
+## Installation
 
 Install::
 
     pip install sphinx-gitref
 
 
-Modify your Sphinx ``conf.py``:
-
-1. Add ``sphinx_gitref`` to the ``extensions`` list in your Sphinx ``conf.py``:
-
+In your Sphinx ``conf.py``, add ``sphinx_gitref`` to the ``extensions`` list:
 
    ```python
    extensions = [
@@ -37,35 +33,9 @@ Modify your Sphinx ``conf.py``:
    ]
    ```
 
-2. Optional: Explicitly specify the remote URL.
+Gitref should now work for most projects, but see "Configuration" below to customise its
+defaults.
 
-   Gitref will try to detect your remote origin URL from the ``.git`` dir in your docs'
-   parent dir. If it can't find it, or detects the wrong remote, you can set or override
-   the remote URL explicitly with::
-
-   ```python
-   gitref_remote_url = "https://github.com/username/repository.git"
-   ```
-
-3. Optional: Explicitly specify the branch to link to.
-
-   Gitref will try to detect your current branch from the ``.git`` dir in your docs'
-   parent dir. If it can't find it, or you'd like it to use a different branch, you can
-   set or override it explicitly with::
-
-   ```python
-   gitref_branch = "master"
-   ```
-
-4. Optional: Change the link label format when a coderef is provided without an
-   explicit label, eg `` :gitref:`filename.py::coderef` ``
-
-   Gitref defaults to using showing the coderef and dropping the filename. This can be
-   overridden by setting a format string::
-
-   ```python
-   gitref_label_format = "{filename} {coderef}"
-   ```
 
 ## Usage
 
@@ -131,9 +101,71 @@ class Gitea(Remote):
 ```
 
 
+## Configuration
+
+Define the following variables in Sphinx ``conf.py``.
+
+
+### ``gitref_relative_project_root``
+
+Explicitly specify the relative path to the project root form your docs' source dir.
+
+The project root is the root directory of your git repository.
+
+Gitref will walk up the directory tree from your documentation source, looking for the
+first directory with a ``.git`` dir. It will use this as the project root.
+
+If it mis-detects the path, you can configure it with a relative path. For example, if
+your docs are in ``docs/``, you can specify one parent up as:
+
+```python
+gitref_relative_project_root = ".."
+```
+
+
+### ``gitref_remote_url``
+
+Explicitly specify the remote URL.
+
+Gitref will try to detect your remote origin URL from the ``.git`` dir in your project
+root. If it can't find it, or detects the wrong remote, you can set or override the
+remote URL explicitly with:
+
+```python
+gitref_remote_url = "https://github.com/username/repository.git"
+```
+
+
+### ``gitref_branch``
+
+Explicitly specify the branch to link to.
+
+Gitref will try to detect your current branch from the ``.git`` dir in your project
+root. If it can't find it, or you'd like it to use a different branch, you can set or
+override it explicitly with::
+
+```python
+gitref_branch = "master"
+```
+
+### ``gitref_label_format``
+
+Change the link label format when a coderef is provided without an explicit label, eg
+`` :gitref:`filename.py::coderef` ``
+
+Gitref defaults to using showing the coderef and dropping the filename. This can be
+overridden by setting a format string::
+
+```python
+gitref_label_format = "{filename} {coderef}"
+```
+
+
+
 ## Changelog
 
 0.3.0 - 2024-05-19
+* Better project root detection with override support (fixes #12)
 * Support latest Sphinx
 
 0.2.1 - 2022-02-19

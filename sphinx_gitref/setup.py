@@ -42,6 +42,7 @@ def setup(app):
     repo = Repo(git_root)
 
     # Add config variables
+    app.add_config_value("gitref_relative_project_root", default=None, rebuild="html")
     app.add_config_value("gitref_remote_url", repo.get_remote_url(), "html")
     app.add_config_value("gitref_branch", repo.get_local_branch(), "html")
     app.add_config_value("gitref_label_format", DEFAULT_LABEL_FORMAT, "html")
