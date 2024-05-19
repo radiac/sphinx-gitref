@@ -60,7 +60,12 @@ class Repo:
 
         # Read the config - intentionally don't catch exceptions, we need those reported
         config = RawConfigParser(allow_no_value=True)
-        config.readfp(config_io)
+        if hasattr(config, "read_fp"):
+            # sphinx 4
+            config.read_fp(config_io)
+        else:
+            # sphinx 5
+            config.read_file(config_io)
 
         try:
             url = config.get(f'remote "{self.remote_name}"', "url")
