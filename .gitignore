@@ -1,9 +1,19 @@
 *.pyc
-__pycache__
 *.egg-info
-.tox
-.coverage*
-htmlcov
+*.log
+__pycache__
+.venv/
+
+# Docs
 docs/_*
 build
 dist
+
+# Testing
+.tox
+.coverage*
+htmlcov
+.*_cache
+
+# OS-specific
+.DS_Store
