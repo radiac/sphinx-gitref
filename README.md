@@ -1,6 +1,7 @@
 # Sphinx Gitref
 
 [![PyPI](https://img.shields.io/pypi/v/sphinx-gitref.svg)](https://pypi.org/project/sphinx-gitref/)
+[![Documentation](https://readthedocs.org/projects/sphinx-gitref/badge/?version=latest)](https://sphinx-gitref.readthedocs.io/en/latest/)
 [![Tests](https://github.com/radiac/sphinx-gitref/actions/workflows/ci.yml/badge.svg)](https://github.com/radiac/sphinx-gitref/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/radiac/sphinx-gitref/branch/main/graph/badge.svg?token=Q9AKPHRJF5)](https://codecov.io/gh/radiac/sphinx-gitref)
 
@@ -34,7 +35,9 @@ extensions = [
 ]
 ```
 
-See [Configuration]() for options to customise gitref's defaults.
+See
+[Configuration](https://sphinx-gitref.readthedocs.io/en/latest/install.html#configuration)
+for options to customise gitref's defaults.
 
 You can then use the `` :gitref:`..` `` role to link to a file on GitHub, GitLab,
 Bitbucket, or your own remote git service:
@@ -58,4 +61,5 @@ as :gitref:`sphinx_python/git.py::Repo.path`.
 If the file, line number or code reference is not in your code, your docs will fail to
 build.
 
-See the [documentation]() for more detailed usage instructions and options.
+See the [documentation](https://sphinx-gitref.readthedocs.io/en/latest/usage.html) for
+more detailed usage instructions and options.
