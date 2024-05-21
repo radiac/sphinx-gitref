@@ -64,7 +64,7 @@ pytest-cov==5.0.0
     # via -r requirements-dev.in
 pytest-mock==3.14.0
     # via -r requirements-dev.in
-requests==2.31.0
+requests==2.32.0
     # via sphinx
 restructuredtext-lint==1.4.0
     # via doc8
