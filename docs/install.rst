@@ -75,3 +75,18 @@ sphinx-gitref defaults to using showing the coderef and dropping the filename. T
 be overridden by setting a format string::
 
     gitref_label_format = "{filename} {coderef}"
+
+
+``gitref_updating``
+-------------------
+
+If ``True`` the hash file will be updated.
+
+It is strongly recommended that you do not set it in your ``conf.py`` - instead you
+should set it temporarily, either by using the ``sphinx-gitref`` update command::
+
+    sphinx-gitref update
+
+or pass the setting into Sphinx, eg::
+
+    sphinx-build ... -D gitref_updating=True

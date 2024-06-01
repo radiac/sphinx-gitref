@@ -5,12 +5,18 @@ import ast
 
 from .exceptions import NodeNotFound, ParseError
 
-
 # Prep assignment node types:
 #   ast.Assign: assignment, eg ``x = 1``
 #   ast.AugAssign: augmented assignment, eg ``x += 1``
 #   ast.AnnAssign: annotated assignment, eg ``x: int = 1``
 AssignTypes = (ast.Assign, ast.AugAssign, ast.AnnAssign)
+
+
+def pp_ast(obj_ast: ast.AST):
+    """
+    Development aid to pretty-print an AST object
+    """
+    print(ast.dump(obj_ast, indent=2))
 
 
 def find_name_in_nodes(name, nodes, path=""):
@@ -40,8 +46,14 @@ def find_name_in_nodes(name, nodes, path=""):
 
     for node in nodes:
         # Check for assignments
-        if type(node) in AssignTypes:
-            for target in node.targets:
+        targets = None
+        if isinstance(node, ast.Assign):
+            targets = node.targets
+        elif isinstance(node, ast.AnnAssign):
+            targets = [node.target]
+
+        if targets:
+            for target in targets:
                 if not hasattr(target, "id") or target.id != name:
                     continue
 
@@ -68,7 +80,7 @@ def find_name_in_nodes(name, nodes, path=""):
     raise NodeNotFound(f'Couldn\'t find "{path}"')
 
 
-def python_to_lineno(path, ref):
+def python_to_node(path, ref):
     """
     Look up a code reference in the specific python file and return the line number it
     is defined on
@@ -82,7 +94,7 @@ def python_to_lineno(path, ref):
         end (int): Line number the reference ends on
 
     Raises:
-        ParseError: If unable to resovle the reference for some reason
+        ParseError: If unable to resolve the reference for some reason
     """
     if path.suffix != ".py":
         raise ParseError("Source file is not Python")
@@ -90,10 +102,10 @@ def python_to_lineno(path, ref):
     # Examine the file
     raw = path.read_text()
 
-    return python_string_to_lineno(raw, ref)
+    return python_string_to_node(raw, ref)
 
 
-def python_string_to_lineno(raw, ref):
+def python_string_to_node(raw, ref):
     """
     Look up a code reference in the provided python source and return the line number it
     is defined on
@@ -118,4 +130,4 @@ def python_string_to_lineno(raw, ref):
     except NodeNotFound as e:
         raise ParseError(str(e))
 
-    return node.lineno
+    return node

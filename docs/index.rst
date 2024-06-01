@@ -9,7 +9,8 @@ Bitbucket, and to make sure the references in your docs match the code.
 
 Key features:
 
-* Check code references are up to date
+* Check code referenced in documentation still exists
+* Alert when the code has changed
 * Link to source code on github
 * Incorporate into tests or git hooks
 

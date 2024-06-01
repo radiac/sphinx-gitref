@@ -8,5 +8,6 @@ pytest-cov
 pytest-mock
 
 # Project dependencies
+click
 docutils
 sphinx

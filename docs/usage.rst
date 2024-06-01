@@ -2,6 +2,8 @@
 Usage
 =====
 
+reStructuredText
+================
 
 The ``:gitref:`..``` role supports the following features:
 
@@ -25,7 +27,7 @@ in the code, and will add its line number to the link.
 
 
 Examples
-========
+--------
 
 Link to a file using gitref::
 
@@ -43,11 +45,40 @@ Link to a variable, function or class in a python file::
     as :gitref:`sphinx_python/git.py::Repo.path`.
 
 
+Commands
+========
+
+``sphinx-gitref check``
+-----------------------
+
+Perform a check of the references.
+
+Because ``sphinx-gitref`` is based around the ``:gitref:`` Sphinx role, the best way to
+test the references is to build the documentation itself.
+
+This command will perform a full build of the documentation, without writing to disk.
+
+Equivalent to ``sphinx-build -M null ... -E -a``
+
+
+``sphinx-gitref update``
+------------------------
+
+This will update the gitref hash file.
+
+Make sure to commit ``gitref.json`` to your git repository.
+
+Equivalent to ``sphinx-build -M null ... -D gitref_updating=True``
+
+
 Using in tests
 ==============
 
-Because ``sphinx-gitref`` integrates into Sphinx, you can test the references are valid
-by performing a test build of your documentation.
+Either run a check::
+
+  sphinx-gitref check
+
+or build the documentation directly.
 
 
 Custom remotes

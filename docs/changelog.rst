@@ -9,6 +9,16 @@ are available by installing the development branch from github (see
 Changelog
 =========
 
+0.4.0, TBC
+----------
+
+Features:
+
+* Add hash checking
+* Add ``sphinx-gitref check`` command to check without building
+* Add ``sphinx-gitref update`` to update the hash file
+
+
 0.3.1, 2024-05-19
 -----------------
 

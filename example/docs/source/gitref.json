@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hashes": {
+    "example/myproject/__init__.py::__version__": "747ba863abe82bb9e9d40ee8473c35c72072ec22bdfca040738142296dbdb914",
+    "example/myproject/reader.py": "4be90c1b76a5443d43b311814494dc5c7bcc9a69c81ee80ce97a7cbb3d7399f0",
+    "example/myproject/reader.py::Reader": "5e7cb69923dea0f274f05204d668b05f008a946f21b9024234e77fef8bb72114",
+    "example/myproject/reader.py::Reader.path": "5595a347cdaf5824fdd13c7ceeb5c6e5403b26af72271264b662730b34e2da28",
+    "example/myproject/reader.py::Reader.__init__": "c6ae913b0f4e46965f8fb278cafb56994ed4655f8c56de36b824488c5ca27725",
+    "example/myproject/reader.py::Reader.read": "f9c546949a02802ec9ad29916b93114a16b0a2bb18f3283716f49ea12ff22d22",
+    "example/myproject/reader.py::read": "6479740fddf0a45a89b3bc200cda7ea31ede20889cb77434a2446d80e9846058"
+  },
+  "lines": {
+    "example/myproject/__init__.py::__version__": 1,
+    "example/myproject/reader.py::Reader": 4,
+    "example/myproject/reader.py::Reader.path": 5,
+    "example/myproject/reader.py::Reader.__init__": 7,
+    "example/myproject/reader.py::Reader.read": 10,
+    "example/myproject/reader.py::read": 14
+  }
+}

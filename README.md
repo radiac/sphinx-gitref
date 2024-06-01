@@ -12,7 +12,8 @@ Bitbucket, and to make sure the references in your docs match the code.
 
 Key features:
 
-* Check code references are up to date
+* Check code referenced in documentation still exists
+* Hashes code and alerts when something has changed
 * Link to source code on github
 * Incorporate into tests or git hooks
 
@@ -58,8 +59,17 @@ Reference class attributes as you would in Python, such
 as :gitref:`sphinx_python/git.py::Repo.path`.
 ```
 
-If the file, line number or code reference is not in your code, your docs will fail to
-build.
+If the file, line number or code reference is not in your code, or if they code's hash
+does not match the hash in the database, your docs will fail to build.
+
+You can check your references are up-to-date with::
+
+    sphinx-gitref check
+
+When adding new references, or when referenced code has changed, you can update the hash
+database with::
+
+    sphinxg-gitref update
 
 See the [documentation](https://sphinx-gitref.readthedocs.io/en/latest/usage.html) for
 more detailed usage instructions and options.

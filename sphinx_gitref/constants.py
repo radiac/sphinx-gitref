@@ -9,3 +9,6 @@ DEFAULT_REMOTE = "origin"
 #   filename    Filename component
 #   coderef     Code reference
 DEFAULT_LABEL_FORMAT = "{coderef}"
+
+#: Hash filename
+HASH_FILENAME = "gitref.json"

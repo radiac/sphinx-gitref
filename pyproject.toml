@@ -20,13 +20,17 @@ classifiers = [
 keywords = ["django"]
 requires-python = ">=3.7"
 dependencies = [
+    "click",
     "docutils",
     "sphinx",
 ]
 
+[project.scripts]
+sphinx-gitref = "sphinx_gitref.commands:invoke"
+
 [project.urls]
 Homepage = "https://radiac.net/projects/sphinx-gitref/"
-Documentation = "https://github.com/radiac/sphinx-gitref"
+Documentation = "https://sphinx-gitref.readthedocs.io/"
 Changelog = "https://github.com/radiac/sphinx-gitref"
 Repository = "https://github.com/radiac/sphinx-gitref"
 Issues = "https://github.com/radiac/sphinx-gitref/issues"

@@ -3,7 +3,6 @@ Sphinx role
 """
 from __future__ import annotations
 
-from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -11,36 +10,10 @@ from docutils import nodes, utils
 from sphinx.util.nodes import split_explicit_title
 
 from .exceptions import ParseError
-from .parser import python_to_lineno
+from .parser import python_to_node
 
 if TYPE_CHECKING:
     from docutils.parsers.rst.states import Inliner
-
-
-@lru_cache
-def get_project_root(doc_root: Path, option: str | None):
-    # See if gitref_relative_project_root has told us where to look
-    if option is not None:
-        project_root = (doc_root / option).absolute()
-        if not project_root.is_dir():
-            raise ValueError(
-                f"Project root {project_root} does not exist"
-                " - check your gitref_relative_project_root"
-            )
-        return project_root
-
-    # Try to detect it
-    project_root = doc_root
-    while project_root != project_root.parent:
-        if (project_root / ".git").is_dir():
-            return project_root
-        project_root = project_root.parent
-
-    # Couldn't find it
-    raise ValueError(
-        "Could not find ancestor path containing a .git dir"
-        " - configure with gitref_relative_project_root"
-    )
 
 
 def gitref(
@@ -81,21 +54,19 @@ def gitref(
     except AttributeError:
         raise ValueError("Config does not specify gitref_remote")
 
+    hasher = app.hasher
+
     # Assume the project root is the first ancestor dir from docs to contain a .git dir
-    doc_root = Path(inliner.document.settings.env.srcdir)
-    project_root = get_project_root(doc_root, app.config.gitref_relative_project_root)
+    project_root = inliner.document.settings.env.project_root
 
     # Process text value
     has_t, title, target = split_explicit_title(text)
     title = utils.unescape(title)
     target = utils.unescape(target)
 
-    # Break target
-    if "::" in target:
-        filename, coderef = target.split("::", 1)
-    else:
-        filename = target
-        coderef = None
+    # Find the target
+    found = hasher.find_target(target)
+    filename, coderef = hasher.name_ref[target]
 
     # Set title if not set
     if title == target:
@@ -105,24 +76,12 @@ def gitref(
                 coderef=coderef,
             )
 
-    # Ensure the file exists - can be a file or a dir
-    filepath = project_root / filename
-    ref_start = None
-    if not filepath.exists():
-        inliner.reporter.error(f"Referenced file does not exist: {filename}")
+    if target in hasher.errors:
+        error = hasher.errors[target]
+        inliner.reporter.error(f"[gitref] Error resolving `{target}`: {error}")
+        return [nodes.Text(title)], []
 
-    # Convert a code ref into a line number
-    elif coderef is not None:
-        try:
-            ref_start = python_to_lineno(filepath, coderef)
-        except ParseError as error:
-            inliner.reporter.error(
-                f'Error resolving code reference "{target}": {error}',
-                line=lineno,
-            )
-            target = filename
-
-    ref = remote.get_url(filename=filename, line=ref_start)
+    ref = remote.get_url(filename=filename, line=hasher.lines.get(target))
 
     node = nodes.reference(rawtext, title, refuri=ref, **(options or {}))
     return [node], []
