@@ -1,4 +1,4 @@
-import sys
+import os
 from pathlib import Path
 
 import pytest
@@ -14,11 +14,11 @@ from .test_role import paths  # noqa
 
 @pytest.fixture
 def with_pythonpath():
-    orig = sys.path.copy()
-    gitref_path = Path(sphinx_gitref.__file__).parent.parent
-    sys.path.append(str(gitref_path))
+    gitref_path = Path(sphinx_gitref.__file__).parent.parent.absolute()
+    orig = os.environ.get("PYTHONPATH", "")
+    os.environ["PYTHONPATH"] = f"{orig}:{gitref_path}" if orig else str(gitref_path)
     yield
-    sys.path = orig
+    os.environ["PYTHONPATH"] = orig
 
 
 @pytest.fixture
