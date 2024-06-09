@@ -7,19 +7,21 @@
 
 Keep your sphinx docs in sync with your code.
 
-Adds a `` :gitref:`..` `` role to sphinx to link to your code on GitHub, GitLab or
+Adds a `` :gitref:`..` `` role to Sphinx to link to your code on GitHub, GitLab or
 Bitbucket, and to make sure the references in your docs match the code.
 
 Key features:
 
 * Check code referenced in documentation still exists
-* Hashes code and alerts when something has changed
+* Check code hashes and alert when something has changed
 * Link to source code on github
 * Incorporate into tests or git hooks
 
 Supports Python 3.7+
 
 ## Quickstart
+
+### Installation
 
 Install:
 
@@ -40,6 +42,9 @@ See
 [Configuration](https://sphinx-gitref.readthedocs.io/en/latest/install.html#configuration)
 for options to customise gitref's defaults.
 
+
+### In reStructuredText
+
 You can then use the `` :gitref:`..` `` role to link to a file on GitHub, GitLab,
 Bitbucket, or your own remote git service:
 
@@ -59,6 +64,9 @@ Reference class attributes as you would in Python, such
 as :gitref:`sphinx_python/git.py::Repo.path`.
 ```
 
+
+### Code hash checks
+
 If the file, line number or code reference is not in your code, or if they code's hash
 does not match the hash in the database, your docs will fail to build.
 
@@ -69,7 +77,7 @@ You can check your references are up-to-date with::
 When adding new references, or when referenced code has changed, you can update the hash
 database with::
 
-    sphinxg-gitref update
+    sphinx-gitref update
 
 See the [documentation](https://sphinx-gitref.readthedocs.io/en/latest/usage.html) for
 more detailed usage instructions and options.

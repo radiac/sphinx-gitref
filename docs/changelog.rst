@@ -9,6 +9,15 @@ are available by installing the development branch from github (see
 Changelog
 =========
 
+0.4.1, 2024-06-09
+-----------------
+
+Bugfix:
+
+* Fix documentation
+* Fix trove classifiers
+
+
 0.4.0, 2024-06-09
 -----------------
 
