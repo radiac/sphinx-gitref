@@ -56,9 +56,6 @@ def gitref(
 
     hasher = app.hasher
 
-    # Assume the project root is the first ancestor dir from docs to contain a .git dir
-    project_root = inliner.document.settings.env.project_root
-
     # Process text value
     has_t, title, target = split_explicit_title(text)
     title = utils.unescape(title)
@@ -78,7 +75,7 @@ def gitref(
 
     if target in hasher.errors:
         error = hasher.errors[target]
-        inliner.reporter.error(f"[gitref] Error resolving `{target}`: {error}")
+        inliner.reporter.error(f'[gitref] Error resolving "{target}": {error}')
         return [nodes.Text(title)], []
 
     ref = remote.get_url(filename=filename, line=hasher.lines.get(target))

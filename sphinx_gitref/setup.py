@@ -5,8 +5,6 @@ The ``setup()`` function will be called automatically by Sphinx
 """
 from pathlib import Path
 
-from sphinx.builders.html import StandaloneHTMLBuilder
-
 from .builders import NullBuilder
 from .constants import DEFAULT_LABEL_FORMAT, HASH_FILENAME
 from .git import Repo
@@ -81,13 +79,15 @@ def lookup_remote(app):
 
 
 def prepare_hasher(app):
+    hashing = app.config.gitref_hashing
     updating = app.config.gitref_updating
-    if not updating and not app.env.hash_path.exists():
+    if hashing and not updating and not app.env.hash_path.exists():
         raise ValueError("Could not load gitref hash - run with --gitref-update?")
 
     app.hasher = Hasher(
         file=app.env.hash_path,
         project_root=app.env.project_root,
+        hashing=hashing,
         updating=updating,
     )
 
@@ -108,14 +108,7 @@ def handle_get_outdated(app, env, added, changed, removed):
     return added | changed | removed
 
 
-finished = False
-
-
 def handle_build_finished(app, exception):
-    global finished
-    if finished:
-        return
-    finished = True
     app.hasher.finish()
 
 
@@ -130,6 +123,7 @@ def setup(app):
     app.add_config_value("gitref_remote_url", None, "html")
     app.add_config_value("gitref_branch", None, "html")
     app.add_config_value("gitref_label_format", DEFAULT_LABEL_FORMAT, "html")
+    app.add_config_value("gitref_hashing", default=True, rebuild="env")
     app.add_config_value("gitref_updating", default=False, rebuild="env")
 
     # Listen for hooks

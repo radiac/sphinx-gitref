@@ -23,7 +23,6 @@ FILE_VERSION = 1
 
 
 def hash_text(text: str):
-    print(f">>> {text}")
     hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
     return hash
 
@@ -42,8 +41,14 @@ class Hasher:
     #: hash file
     file: Path
 
+    #: If we're performing hashing
+    hashing: bool
+
     #: if we're updating the hash file, or checking it
     updating: bool
+
+    #: Track whether we've finished processing and reporting
+    finished: bool = False
 
     #: List of stored hashes from the last update
     hashes: dict[str, str]
@@ -70,9 +75,10 @@ class Hasher:
     used_queue: Queue
     error_queue: Queue
 
-    def __init__(self, file: Path, project_root: Path, updating: bool):
+    def __init__(self, file: Path, project_root: Path, hashing: bool, updating: bool):
         self.file = file
         self.project_root = project_root
+        self.hashing = hashing
         self.updating = updating
 
         # Data from file
@@ -95,8 +101,8 @@ class Hasher:
         """
         Load the hash file, if we need it and it exists
         """
-        # No need to load it if we're updating, we'll ignore it anyway
-        if self.updating:
+        # No need to load it if we're updating or not hashing, we'll ignore it anyway
+        if self.updating or not self.hashing:
             return
 
         # It's ok if the file doesn't exist, maybe gitref is installed but not used.
@@ -139,6 +145,19 @@ class Hasher:
             self.find_target(target, checking=True)
         self.collect_queues()
 
+    def error(self, target: str, message: str):
+        """
+        Log an error
+
+        When running in parallel, the current process needs to know the error has
+        occurred, but the main process also needs to find out.
+
+        This writes to the local self.errors so it's available immediately, and also
+        writes to the error_queue so it's picked up at the end
+        """
+        self.errors[target] = message
+        self.error_queue.put((target, message))
+
     def find_target(self, target: str, checking=False):
         """
         Find the specified target and check it against the cache, or update the cache if
@@ -153,19 +172,20 @@ class Hasher:
         # Ensure the file exists - can be a file or a dir
         filepath = self.project_root / filename
         if not filepath.exists():
-            self.error_queue.put((target, "File not found"))
+            self.error(target, "File not found")
             return False
 
         elif coderef is None:
             hashed = hash_file(filepath)
-            if self.updating:
+            if self.updating or not self.hashing:
                 # Put it in both the dict for local access, and the queue for parallel
                 self.hashes[target] = hashed
                 self.hash_queue.put((target, hashed))
             elif target not in self.hashes:
-                self.error_queue.put((target, "Unknown target"))
-            elif self.hashes[target] != hashed:
-                self.error_queue.put((target, "Target changed"))
+                self.error(target, "Unknown target")
+            elif self.hashing and self.hashes[target] != hashed:
+                # Add to both local errors and the error queue in case multiprocessing
+                self.error(target, "Target changed")
             else:
                 # target is in hashes and matches
                 pass
@@ -181,13 +201,13 @@ class Hasher:
                 self.lines[target] = node.lineno
                 hashed = hash_node(node)
 
-                if self.updating:
+                if self.updating or not self.hashing:
                     self.hashes[target] = hashed
                     self.hash_queue.put((target, hashed))
                 elif target not in self.hashes:
-                    self.error_queue.put((target, "Unknown target"))
-                elif self.hashes[target] != hashed:
-                    self.error_queue.put((target, "Target changed"))
+                    self.error(target, "Unknown target")
+                elif self.hashing and self.hashes[target] != hashed:
+                    self.error(target, "Target changed")
                 else:
                     # target is in hashes and matches
                     pass
@@ -198,8 +218,14 @@ class Hasher:
         """
         Called once all the docs have been processed
         """
+        # We only want to finish once, but the build-finished hook may get called
+        # multiple times for the different builders. We'll just run this on the first.
+        if self.finished:
+            return
+        self.finished = True
+
         self.collect_queues()
-        if self.updating:
+        if self.hashing and self.updating:
             self.build_file()
         else:
             self.report()
@@ -249,20 +275,21 @@ class Hasher:
         logger.info(f"{num} gitref {references(num)} found")
 
         # Check for references we saw in the past which no longer exist
-        hashes = set(self.hashes.keys())
-        unused = hashes - self.used
-        if unused:
-            num = len(unused)
-            logger.warning(
-                f"gitref hash file is out of date, {num} unused {references(num)}"
-            )
+        if self.hashing:
+            hashes = set(self.hashes.keys())
+            unused = hashes - self.used
+            if unused:
+                num = len(unused)
+                logger.warning(
+                    f"gitref hash file is out of date, {num} unused {references(num)}"
+                )
 
-        extra = self.used - hashes
-        if extra:
-            num = len(extra)
-            raise ValueError(
-                f"gitref hash file is out of date, {num} missing {references(num)}"
-            )
+            extra = self.used - hashes
+            if extra:
+                num = len(extra)
+                raise ValueError(
+                    f"gitref hash file is out of date, {num} missing {references(num)}"
+                )
 
         if self.errors:
             raise SphinxError("[gitref] References failed. Build failed.")

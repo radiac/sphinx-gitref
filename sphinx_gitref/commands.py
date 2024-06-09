@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from subprocess import run
+from subprocess import PIPE, STDOUT, run
 
 import click
 
@@ -19,13 +19,16 @@ def get_sphinx_dir(ctx, param, dir: str) -> Path:
 def make(dir: Path, opts: str):
     env = os.environ.copy()
     env["SPHINXOPTS"] = opts
-    run(
+    result = run(
         ["make", "null"],
         cwd=dir,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
+        stdout=PIPE,
+        stderr=STDOUT,
         env=env,
     )
+    click.echo(result.stdout.decode())
+    if result.returncode != 0:
+        raise click.ClickException("sphinx-gitref failed")
 
 
 @click.group()

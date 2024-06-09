@@ -9,14 +9,18 @@ are available by installing the development branch from github (see
 Changelog
 =========
 
-0.4.0, TBC
-----------
+0.4.0, 2024-06-09
+-----------------
 
 Features:
 
 * Add hash checking
 * Add ``sphinx-gitref check`` command to check without building
 * Add ``sphinx-gitref update`` to update the hash file
+
+Changes:
+
+* Invalid references are now rendered as text label only, without an invalid link url.
 
 
 0.3.1, 2024-05-19

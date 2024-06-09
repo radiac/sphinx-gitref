@@ -1,8 +1,11 @@
 """
 Test the :gitref: role
 """
+import os
+
 import pytest
 from sphinx.application import Sphinx
+from sphinx.errors import SphinxError
 
 from .common import GIT_CONFIG
 
@@ -41,6 +44,7 @@ def paths(tmp_path):
         """
 master_doc = 'index'
 extensions = ["sphinx_gitref"]
+gitref_hashing = False
 """
     )
 
@@ -79,17 +83,17 @@ def app(paths):
 
     Warnings are app._warnings.getvalue()
     """
-    with paths.docs.cwd():
-        app = Sphinx(
-            srcdir=str(paths.docs),
-            confdir=str(paths.docs),
-            outdir=str(paths.html),
-            doctreedir=str(paths.doctrees),
-            status=StringIO(),
-            warning=StringIO(),
-            buildername="html",
-        )
-        return app
+    os.chdir(paths.docs)
+    app = Sphinx(
+        srcdir=str(paths.docs),
+        confdir=str(paths.docs),
+        outdir=str(paths.html),
+        doctreedir=str(paths.doctrees),
+        status=StringIO(),
+        warning=StringIO(),
+        buildername="html",
+    )
+    return app
 
 
 def test_path__path_renders_as_link(app, paths):
@@ -124,20 +128,17 @@ def test_path__path_does_not_exist__renders_but_raises_warning(app, paths, capsy
     index.write_text("foo :gitref:`Example <example.py>`")
 
     start_warnings = app._warncount
-    app.build()
+    with pytest.raises(SphinxError):
+        app.build()
 
     # Check it renders as before...
     html = (paths.html / "index.html").read_text()
-    assert (
-        '<p>foo <a class="reference external" '
-        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
-        "Example</a></p>"
-    ) in html
+    assert ("<p>foo Example</p>") in html
 
     # ... but still raises a warning
     assert app._warncount - start_warnings == 1
     assert (
-        "Referenced file does not exist: example.py"
+        'Error resolving "example.py": File not found'
         in app._warning.getvalue().splitlines()[-1]
     )
 
@@ -173,19 +174,15 @@ def test_coderef_var__does_not_exist__renders_as_link_but_raises_error(app, path
     index.write_text("foo :gitref:`Example <example.py::missing>`")
 
     start_warnings = app._warncount
-    app.build()
+    with pytest.raises(SphinxError):
+        app.build()
 
     # Check it renders without line numbers
     html = (paths.html / "index.html").read_text()
-    assert (
-        '<p>foo <a class="reference external" '
-        'href="https://github.com/radiac/sphinx_gitref/blob/master/example.py">'
-        "Example</a></p>"
-    ) in html
+    assert ("<p>foo Example</p>") in html
 
     # Check it still raises a warning
     assert app._warncount - start_warnings == 1
     assert (
-        'Error resolving code reference "example.py::missing": '
-        'Couldn\'t find "missing"'
+        'Error resolving "example.py::missing": Couldn\'t find "missing"'
     ) in app._warning.getvalue().splitlines()[-1]
