@@ -1,15 +1,28 @@
+import sys
+from pathlib import Path
+
 import pytest
 from click.testing import CliRunner
 from sphinx.application import Sphinx
 from sphinx.errors import SphinxError
 
+import sphinx_gitref
 from sphinx_gitref.commands import cli
 
 from .test_role import paths  # noqa
 
 
 @pytest.fixture
-def extra_paths(paths):
+def with_pythonpath():
+    orig = sys.path.copy()
+    gitref_path = Path(sphinx_gitref.__file__).parent.parent
+    sys.path.append(str(gitref_path))
+    yield
+    sys.path = orig
+
+
+@pytest.fixture
+def extra_paths(with_pythonpath, paths):
     paths.conf.write_text(
         """
 master_doc = 'index'
