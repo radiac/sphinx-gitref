@@ -90,3 +90,16 @@ should set it temporarily, either by using the ``sphinx-gitref`` update command:
 or pass the setting into Sphinx, eg::
 
     sphinx-build ... -D gitref_updating=True
+
+
+Use with pre-commit
+===================
+
+The ``sphinx-gitref check`` command can be run as a pre-commit hook, although it
+may be too slow and verbose for regular use::
+
+  - repo: https://github.com/radiac/sphinx-gitref
+    rev: v0.4.1
+    hooks:
+    - id: sphinx-gitref
+      args: ["docs"]

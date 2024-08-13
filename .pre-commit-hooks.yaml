@@ -1,0 +1,9 @@
+- id: sphinx-gitref-check
+  name: sphinx-gitref check
+  description: "Run 'sphinx-gitref check'"
+  entry: sphinx-gitref check
+  require_serial: true
+  language: python
+  always_run: true
+
+
