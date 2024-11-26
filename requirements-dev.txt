@@ -88,7 +88,7 @@ sphinxcontrib-serializinghtml==1.1.10
     # via sphinx
 stevedore==5.2.0
     # via doc8
-urllib3==2.2.1
+urllib3==2.2.2
     # via requests
 wheel==0.43.0
     # via pip-tools
